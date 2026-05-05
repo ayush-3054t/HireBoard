@@ -2,10 +2,10 @@
   "name": "job-portal-server",
   "version": "1.0.0",
   "description": "Express API for a role-based job portal",
-  "main": "server/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node server/index.js",
+    "start": "node index.js",
     "seed:admin": "node scripts/seedAdmin.js"
   },
   "dependencies": {
