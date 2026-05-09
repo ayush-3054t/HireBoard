@@ -5,7 +5,18 @@ const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config();
 
+const connectDB = require('./config/db');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const recruiterRoutes = require('./routes/recruiterRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const jobRoutes = require('./routes/jobRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
+const companyRoutes = require('./routes/companyRoutes');
+
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: true,
@@ -44,5 +55,11 @@ app.use(notFound);
 app.use(errorHandler);
 
 connectDB();
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
 module.exports = app;
