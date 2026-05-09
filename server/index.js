@@ -59,7 +59,6 @@ app.use('/api/companies', companyRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+connectDB();
+
+module.exports = app;
