@@ -6,7 +6,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL ? import.meta.env.VITE_
 ;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+  baseURL: import.meta.env.VITE_API_URL || 'https://hire-board-git-main-ayushs-projects-6fd09652.vercel.app/api' 
 });
 
 api.interceptors.request.use((config) => {
