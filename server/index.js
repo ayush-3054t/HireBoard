@@ -21,7 +21,8 @@ const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://hire-board-zmf8.vercel.app'
+  'https://hire-board-zmf8.vercel.app',
+  'https://hire-board-ei24.vercel.app'
 ];
 
 app.use(cors({
