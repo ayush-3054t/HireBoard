@@ -45,8 +45,8 @@ export default function AdminDashboard() {
   if (!stats) return <main className="mx-auto max-w-7xl px-4 py-10">Loading...</main>;
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-3xl font-bold dark:text-white">Admin control panel</h1>
+    <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+      <h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Admin control panel</h1>
       <div className="mt-6 grid gap-4 md:grid-cols-5">
         <StatCard label="Users" value={stats.totalUsers} />
         <StatCard label="Recruiters" value={stats.totalRecruiters} />
@@ -62,12 +62,12 @@ export default function AdminDashboard() {
         <h2 className="font-semibold dark:text-white">Job moderation</h2>
         <div className="mt-4 divide-y divide-stone-200 dark:divide-stone-800">
           {jobs.map((job) => (
-            <div className="flex flex-wrap items-center justify-between gap-3 py-3" key={job._id}>
-              <div>
-                <p className="font-medium dark:text-white">{job.title}</p>
+            <div className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between" key={job._id}>
+              <div className="min-w-0">
+                <p className="break-words font-medium dark:text-white">{job.title}</p>
                 <p className="text-sm text-stone-500">{job.location} · {job.status}</p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-2 sm:flex sm:flex-wrap">
                 <button className="btn-secondary" onClick={() => moderate(job._id, 'approved')}>Approve</button>
                 <button className="btn-secondary" onClick={() => moderate(job._id, 'rejected')}>Reject</button>
                 <button className="btn-secondary" onClick={() => deleteJob(job._id)}>Delete</button>
@@ -86,12 +86,12 @@ function AccountPanel({ title, items, type, onToggle }) {
       <h2 className="font-semibold dark:text-white">{title}</h2>
       <div className="mt-4 divide-y divide-stone-200 dark:divide-stone-800">
         {items.map((item) => (
-          <div className="flex items-center justify-between gap-3 py-3" key={item._id}>
-            <div>
+          <div className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between" key={item._id}>
+            <div className="min-w-0">
               <p className="font-medium dark:text-white">{item.name}</p>
-              <p className="text-sm text-stone-500">{item.email} · {item.isBlocked ? 'Blocked' : 'Active'}</p>
+              <p className="break-all text-sm text-stone-500">{item.email} · {item.isBlocked ? 'Blocked' : 'Active'}</p>
             </div>
-            <button className="btn-secondary" onClick={() => onToggle(type, item._id)}>{item.isBlocked ? 'Unblock' : 'Block'}</button>
+            <button className="btn-secondary w-full sm:w-auto" onClick={() => onToggle(type, item._id)}>{item.isBlocked ? 'Unblock' : 'Block'}</button>
           </div>
         ))}
       </div>

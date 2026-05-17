@@ -42,10 +42,10 @@ export default function JobDetails() {
   if (!job) return <main className="mx-auto max-w-4xl px-4 py-10">Loading...</main>;
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[1fr_360px]">
+    <main className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_360px]">
       <section className="panel">
         <p className="text-sm font-semibold text-brand">{job.company?.name}</p>
-        <h1 className="mt-2 text-3xl font-bold dark:text-white">{job.title}</h1>
+        <h1 className="mt-2 break-words text-2xl font-bold dark:text-white sm:text-3xl">{job.title}</h1>
         <p className="mt-2 text-stone-500">{job.location} · {job.jobType}</p>
         <div className="mt-6 whitespace-pre-wrap text-stone-700 dark:text-stone-300">{job.description}</div>
         <h2 className="mt-6 font-semibold dark:text-white">Skills</h2>

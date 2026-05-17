@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <main className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative bg-stone-900 pt-20 pb-32 lg:pt-32 lg:pb-48">
+      <section className="relative bg-stone-900 pt-16 pb-20 sm:pt-20 sm:pb-28 lg:pt-32 lg:pb-40">
         <div className="absolute inset-0 overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2850&q=80"
@@ -51,23 +51,23 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-4 py-1.5 text-sm font-semibold text-teal-300 backdrop-blur-sm">
+          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1.5 text-xs font-semibold text-teal-300 backdrop-blur-sm sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4" />
             The Next-Gen Hiring Platform
           </div>
-          <h1 className="mt-8 text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:mt-8 sm:text-6xl lg:text-7xl">
             Find Your Dream Job <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">or Hire Top Talent.</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-stone-300">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-stone-300 sm:mt-6 sm:text-lg sm:leading-8">
             A complete job portal for candidates, recruiters, and admins. Streamline your hiring process with modern tools, beautiful profiles, and seamless applications.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link to="/jobs" className="group flex items-center justify-center rounded-full bg-teal-500 px-8 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 transition-all">
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
+            <Link to="/jobs" className="group flex items-center justify-center rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 transition-all sm:px-8 sm:py-3.5 sm:text-base">
               Browse Jobs
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link to="/register" className="flex items-center justify-center rounded-full border border-stone-600 bg-stone-800/50 px-8 py-3.5 text-base font-semibold text-white backdrop-blur-sm hover:bg-stone-700 transition-all">
+            <Link to="/register" className="flex items-center justify-center rounded-full border border-stone-600 bg-stone-800/50 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm hover:bg-stone-700 transition-all sm:px-8 sm:py-3.5 sm:text-base">
               Create an Account
             </Link>
           </div>
@@ -75,13 +75,13 @@ export default function Home() {
       </section>
 
       {/* Company Showcase Section */}
-      <section className="bg-stone-950 py-12 border-y border-stone-800">
+      <section className="bg-stone-950 py-10 sm:py-12 border-y border-stone-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm font-medium text-stone-400 uppercase tracking-widest">Trusted by innovative companies worldwide</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+          <div className="mt-8 grid grid-cols-2 gap-4 opacity-70 grayscale hover:grayscale-0 transition-all duration-500 sm:flex sm:flex-wrap sm:justify-center sm:gap-8 md:gap-16">
             {companies.map((company) => (
-              <div key={company} className="flex items-center gap-2 text-xl font-bold text-stone-200">
-                <Building2 className="h-6 w-6" /> {company}
+              <div key={company} className="flex min-w-0 items-center justify-center gap-2 text-center text-sm font-bold text-stone-200 sm:text-xl">
+                <Building2 className="h-5 w-5 shrink-0 sm:h-6 sm:w-6" /> <span className="truncate sm:overflow-visible">{company}</span>
               </div>
             ))}
           </div>
@@ -89,18 +89,18 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-stone-50 py-24 dark:bg-stone-900">
+      <section className="bg-stone-50 py-16 dark:bg-stone-900 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">One platform, three dedicated experiences</h2>
-            <p className="mt-4 text-lg text-stone-600 dark:text-stone-300">
+            <h2 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">One platform, three dedicated experiences</h2>
+            <p className="mt-4 text-base text-stone-600 dark:text-stone-300 sm:text-lg">
               Whether you are looking for your next career move, hunting for the perfect candidate, or managing the ecosystem, we have tailored tools for you.
             </p>
           </div>
           
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:mt-16 sm:gap-8 md:grid-cols-3">
             {roles.map(([Icon, title, text]) => (
-              <div className="relative rounded-2xl border border-stone-200 bg-white p-8 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-950/50" key={title}>
+              <div className="relative rounded-lg border border-stone-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-950/50 sm:p-8" key={title}>
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400">
                   <Icon className="h-6 w-6" />
                 </div>
@@ -114,12 +114,12 @@ export default function Home() {
 
       {/* Latest Jobs Section */}
       {latestJobs.length > 0 && (
-        <section className="bg-white py-24 dark:bg-stone-950 border-t border-stone-200 dark:border-stone-800">
+        <section className="bg-white py-16 dark:bg-stone-950 border-t border-stone-200 dark:border-stone-800 sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">Latest Opportunities</h2>
-                <p className="mt-4 text-lg text-stone-600 dark:text-stone-300">Discover recently approved roles from top companies.</p>
+                <h2 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">Latest Opportunities</h2>
+                <p className="mt-3 text-base text-stone-600 dark:text-stone-300 sm:mt-4 sm:text-lg">Discover recently approved roles from top companies.</p>
               </div>
               <Link to="/jobs" className="hidden sm:flex items-center gap-2 text-teal-600 font-semibold hover:text-teal-500">
                 View all jobs <ArrowRight className="h-4 w-4" />
@@ -128,15 +128,15 @@ export default function Home() {
             
             <div className="mt-12 grid gap-6 md:grid-cols-2">
               {latestJobs.map((job) => (
-                <Link to={`/jobs/${job._id}`} key={job._id} className="group relative rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-900/50 hover:border-teal-500/30">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-semibold text-stone-900 dark:text-white group-hover:text-teal-500 transition-colors">{job.title}</h3>
+                <Link to={`/jobs/${job._id}`} key={job._id} className="group relative rounded-lg border border-stone-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-900/50 hover:border-teal-500/30 sm:p-6">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <h3 className="break-words text-lg font-semibold text-stone-900 dark:text-white group-hover:text-teal-500 transition-colors sm:text-xl">{job.title}</h3>
                       <p className="mt-1 flex items-center gap-2 text-stone-500 dark:text-stone-400">
                         <Building2 className="h-4 w-4" /> {job.company?.name || 'Company'}
                       </p>
                     </div>
-                    <span className="inline-flex items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-500/10 dark:text-teal-400">
+                    <span className="inline-flex w-fit items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-500/10 dark:text-teal-400">
                       {job.jobType}
                     </span>
                   </div>
@@ -152,16 +152,16 @@ export default function Home() {
       )}
 
       {/* Platform Features / Dashboard Preview */}
-      <section className="bg-stone-50 py-24 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-16 lg:grid-cols-2 items-center">
+      <section className="bg-stone-50 py-16 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
           <div>
             <div className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
               From post to placement
             </div>
-            <h2 className="mt-6 text-3xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">
+            <h2 className="mt-6 text-2xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">
               Everything needed to run a modern hiring marketplace
             </h2>
-            <p className="mt-4 text-lg text-stone-600 dark:text-stone-300">
+            <p className="mt-4 text-base text-stone-600 dark:text-stone-300 sm:text-lg">
               Candidates apply with rich profiles and resumes, recruiters review applicant status in real-time, and admins keep the platform clean with robust moderation controls.
             </p>
             
@@ -184,7 +184,7 @@ export default function Home() {
 
           {/* Abstract UI Representation */}
           <div className="relative">
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-2xl dark:border-stone-800 dark:bg-stone-950/50">
+            <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-2xl dark:border-stone-800 dark:bg-stone-950/50 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500"></div>
@@ -203,7 +203,7 @@ export default function Home() {
                         <div className="h-4 w-32 rounded bg-stone-200 dark:bg-stone-700"></div>
                         <div className="h-3 w-24 rounded bg-stone-200 dark:bg-stone-800"></div>
                       </div>
-                      <div className="h-8 w-24 rounded-lg bg-stone-200 dark:bg-stone-800"></div>
+                      <div className="hidden h-8 w-24 rounded-lg bg-stone-200 dark:bg-stone-800 sm:block"></div>
                     </div>
                   </div>
                 ))}
@@ -214,18 +214,18 @@ export default function Home() {
       </section>
 
       {/* Call to Action */}
-      <section className="relative isolate bg-stone-900 py-24">
+      <section className="relative isolate bg-stone-900 py-16 sm:py-24">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2850&q=80" alt="Office space" className="h-full w-full object-cover opacity-10" />
           <div className="absolute inset-0 bg-stone-900/80 mix-blend-multiply"></div>
         </div>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Ready to take the next step?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-stone-300">
+          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">Ready to take the next step?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-stone-300 sm:text-lg">
             Join thousands of professionals and top companies already building the future on HireBoard.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
-            <Link to="/register" className="rounded-full bg-teal-500 px-8 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-teal-400 transition-all">
+            <Link to="/register" className="w-full rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-teal-400 transition-all sm:w-auto sm:px-8 sm:py-3.5 sm:text-base">
               Get Started for Free
             </Link>
           </div>

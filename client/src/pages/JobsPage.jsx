@@ -36,9 +36,9 @@ export default function JobsPage() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
+    <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold dark:text-white">Job listings</h1>
+        <h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Job listings</h1>
         <p className="text-stone-500">Search approved jobs by role, location, type, and salary.</p>
       </div>
       <form className="panel mb-6 grid gap-3 md:grid-cols-5" onSubmit={(e) => { e.preventDefault(); loadJobs(); }}>
@@ -56,7 +56,7 @@ export default function JobsPage() {
         </div>
       )}
       {!loading && !jobs.length && <p className="panel">No jobs found.</p>}
-      <div className="mt-6 flex justify-end gap-2">
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:justify-end">
         <button className="btn-secondary" disabled={meta.page <= 1} onClick={() => loadJobs(meta.page - 1)}>Previous</button>
         <button className="btn-secondary" disabled={meta.page >= meta.pages} onClick={() => loadJobs(meta.page + 1)}>Next</button>
       </div>

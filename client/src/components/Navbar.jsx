@@ -13,12 +13,12 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-stone-200 bg-white/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link to="/" className="flex items-center gap-2 font-bold text-ink dark:text-white">
+      <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <Link to="/" className="flex shrink-0 items-center gap-2 font-bold text-ink dark:text-white">
           <BriefcaseBusiness className="h-6 w-6 text-brand" />
           HireBoard
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-1 items-center justify-end gap-2 sm:flex-none sm:gap-4">
           <NavLink to="/jobs" className={linkClass}>Jobs</NavLink>
           {token && <NavLink to={dashboardPath[role]} className={linkClass}>Dashboard</NavLink>}
           <button
@@ -34,7 +34,7 @@ export default function Navbar() {
             </span>
           </button>
           {token ? (
-            <button className="btn-secondary" onClick={logout}><LogOut className="h-4 w-4" /> Logout</button>
+            <button className="btn-secondary px-2 sm:px-4" onClick={logout}><LogOut className="h-4 w-4" /><span className="hidden sm:inline">Logout</span></button>
           ) : (
             <Link className="btn-primary" to="/login">Login</Link>
           )}

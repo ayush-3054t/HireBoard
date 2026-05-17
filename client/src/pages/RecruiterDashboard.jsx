@@ -50,8 +50,8 @@ export default function RecruiterDashboard() {
   if (!data) return <main className="mx-auto max-w-7xl px-4 py-10">Loading...</main>;
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-3xl font-bold dark:text-white">Recruiter dashboard</h1>
+    <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+      <h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Recruiter dashboard</h1>
       <div className="mt-6 grid gap-4 md:grid-cols-4">
         <StatCard label="Jobs" value={data.totalJobs} />
         <StatCard label="Approved" value={data.approvedJobs} />
@@ -77,9 +77,9 @@ export default function RecruiterDashboard() {
         <h2 className="font-semibold dark:text-white">Posted jobs</h2>
         <div className="mt-4 divide-y divide-stone-200 dark:divide-stone-800">
           {data.jobs.map((item) => (
-            <div className="flex flex-wrap items-center justify-between gap-3 py-3" key={item._id}>
-              <div><p className="font-medium dark:text-white">{item.title}</p><p className="text-sm text-stone-500">{item.status} · {item.location}</p></div>
-              <button className="btn-secondary" onClick={() => viewApplicants(item._id)}>Applicants</button>
+            <div className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between" key={item._id}>
+              <div className="min-w-0"><p className="break-words font-medium dark:text-white">{item.title}</p><p className="text-sm text-stone-500">{item.status} · {item.location}</p></div>
+              <button className="btn-secondary w-full sm:w-auto" onClick={() => viewApplicants(item._id)}>Applicants</button>
             </div>
           ))}
         </div>
@@ -87,8 +87,8 @@ export default function RecruiterDashboard() {
       {!!applicants.length && <section className="panel mt-6">
         <h2 className="font-semibold dark:text-white">Applicants</h2>
         {applicants.map((app) => (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 py-3 dark:border-stone-800" key={app._id}>
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 border-b border-stone-200 py-3 dark:border-stone-800 sm:flex-row sm:items-center sm:justify-between" key={app._id}>
+            <div className="flex min-w-0 items-center gap-3">
               <div className="h-10 w-10 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800 shrink-0">
                 {app.user?.profilePhoto ? (
                   <img src={`${API_BASE_URL}/${app.user.profilePhoto.startsWith('/') ? app.user.profilePhoto.slice(1) : app.user.profilePhoto}`} alt="Profile" className="h-full w-full object-cover" />
@@ -96,12 +96,12 @@ export default function RecruiterDashboard() {
                   <div className="flex h-full items-center justify-center text-xs text-stone-500">No Img</div>
                 )}
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium dark:text-white">{app.user?.name}</p>
-                <p className="text-sm text-stone-500">{app.user?.email} · {app.status}</p>
+                <p className="break-all text-sm text-stone-500">{app.user?.email} · {app.status}</p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid gap-2 sm:flex sm:flex-wrap">
               {app.resume && (
                 <a href={`${API_BASE_URL}/${app.resume.startsWith('/') ? app.resume.slice(1) : app.resume}`} target="_blank" rel="noopener noreferrer" className="btn-secondary whitespace-nowrap text-brand">View Resume</a>
               )}

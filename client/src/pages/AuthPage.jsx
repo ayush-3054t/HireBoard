@@ -26,15 +26,15 @@ export default function AuthPage({ mode }) {
   };
 
   return (
-    <main className="mx-auto max-w-md px-4 py-12">
+    <main className="mx-auto max-w-md px-4 py-8 sm:py-12">
       <form className="panel space-y-4" onSubmit={submit}>
         <div>
           <h1 className="text-2xl font-bold dark:text-white">{isLogin ? 'Login' : 'Register'}</h1>
           <p className="text-sm text-stone-500">{isLogin ? 'Access your role dashboard.' : 'Create a candidate or recruiter account.'}</p>
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {['user', 'recruiter', ...(isLogin ? ['admin'] : [])].map((item) => (
-            <button type="button" key={item} onClick={() => setRole(item)} className={role === item ? 'btn-primary' : 'btn-secondary'}>
+            <button type="button" key={item} onClick={() => setRole(item)} className={`${role === item ? 'btn-primary' : 'btn-secondary'} capitalize`}>
               {item}
             </button>
           ))}

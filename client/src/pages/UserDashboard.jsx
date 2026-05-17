@@ -40,8 +40,8 @@ export default function UserDashboard() {
   if (!data) return <main className="mx-auto max-w-7xl px-4 py-10">Loading...</main>;
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-3xl font-bold dark:text-white">Job seeker dashboard</h1>
+    <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+      <h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Job seeker dashboard</h1>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         <StatCard label="Applications" value={data.totalApplications} />
         <StatCard label="Reviewing" value={data.reviewing} />
@@ -51,7 +51,7 @@ export default function UserDashboard() {
         <form className="panel space-y-3" onSubmit={saveProfile}>
           <h2 className="font-semibold dark:text-white">Profile</h2>
           
-          <div className="flex items-center gap-4 py-2">
+          <div className="flex flex-col gap-4 py-2 sm:flex-row sm:items-center">
             <div className="h-16 w-16 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800 shrink-0">
               {(profilePhoto || data.user?.profilePhoto) ? (
                 <img src={profilePhoto ? URL.createObjectURL(profilePhoto) : `${API_BASE_URL}/${data.user.profilePhoto.startsWith('/') ? data.user.profilePhoto.slice(1) : data.user.profilePhoto}`} alt="Profile" className="h-full w-full object-cover" />
@@ -59,9 +59,9 @@ export default function UserDashboard() {
                 <div className="flex h-full items-center justify-center text-sm text-stone-500">No Img</div>
               )}
             </div>
-            <div>
+            <div className="w-full min-w-0">
               <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Profile Photo</label>
-              <input type="file" accept=".png, .jpg, .jpeg" className="mt-1 block w-full text-sm text-stone-500 file:mr-4 file:rounded-full file:border-0 file:bg-brand/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand hover:file:bg-brand/20" onChange={(e) => setProfilePhoto(e.target.files[0])} />
+              <input type="file" accept=".png, .jpg, .jpeg" className="mt-1 block w-full text-sm text-stone-500 file:mr-3 file:rounded-full file:border-0 file:bg-brand/10 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-brand hover:file:bg-brand/20 sm:file:px-4" onChange={(e) => setProfilePhoto(e.target.files[0])} />
             </div>
           </div>
 
@@ -80,7 +80,7 @@ export default function UserDashboard() {
           
           <div className="py-2">
             <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Resume (PDF)</label>
-            <input type="file" accept=".pdf" className="mt-1 block w-full text-sm text-stone-500 file:mr-4 file:rounded file:border-0 file:bg-stone-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-stone-700 hover:file:bg-stone-200 dark:file:bg-stone-800 dark:file:text-stone-300" onChange={(e) => setResume(e.target.files[0])} />
+            <input type="file" accept=".pdf" className="mt-1 block w-full text-sm text-stone-500 file:mr-3 file:rounded file:border-0 file:bg-stone-100 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-stone-700 hover:file:bg-stone-200 dark:file:bg-stone-800 dark:file:text-stone-300 sm:file:px-4" onChange={(e) => setResume(e.target.files[0])} />
             {data.user?.resume && !resume && (
               <p className="mt-2 text-xs text-brand">Current: {data.user.resume.split('/').pop()}</p>
             )}
@@ -96,7 +96,7 @@ export default function UserDashboard() {
           <div className="mt-4 divide-y divide-stone-200 dark:divide-stone-800">
             {data.applications.map((app) => (
               <div className="py-3" key={app._id}>
-                <p className="font-medium dark:text-white">{app.job?.title}</p>
+                <p className="break-words font-medium dark:text-white">{app.job?.title}</p>
                 <p className="text-sm text-stone-500">{app.job?.company?.name || 'Company'} · {app.status}</p>
               </div>
             ))}
