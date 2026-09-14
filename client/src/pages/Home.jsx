@@ -14,18 +14,29 @@ import {
   UsersRound,
   Star
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 
 export default function Home() {
   const [latestJobs, setLatestJobs] = useState([]);
+  const [search, setSearch] = useState('');
+  const [location, setLocation] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/jobs', { params: { limit: 4 } })
+    api.get('/jobs', { params: { limit: 6 } })
       .then(res => setLatestJobs(res.data.jobs || []))
       .catch(err => console.error('Failed to load jobs', err));
   }, []);
+
+  const searchJobs = (event) => {
+    event.preventDefault();
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('search', search.trim());
+    if (location.trim()) params.set('location', location.trim());
+    navigate(`/jobs${params.toString() ? `?${params.toString()}` : ''}`);
+  };
 
   const roles = [
     [UserRound, 'Job Seekers', 'Build a profile, upload resumes, save roles, and track every application with ease.'],
@@ -50,18 +61,32 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/60 to-transparent"></div>
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1.5 text-xs font-semibold text-teal-300 backdrop-blur-sm sm:px-4 sm:text-sm">
+        <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <div className="inline-flex animate-rise-in max-w-full items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1.5 text-xs font-semibold text-teal-300 backdrop-blur-sm sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4" />
             The Next-Gen Hiring Platform
           </div>
-          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:mt-8 sm:text-6xl lg:text-7xl">
+          <h1 className="mt-6 animate-rise-in text-4xl font-extrabold tracking-tight text-white sm:mt-8 sm:text-6xl lg:text-7xl">
             Find Your Dream Job <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">or Hire Top Talent.</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-stone-300 sm:mt-6 sm:text-lg sm:leading-8">
+          <p className="mx-auto mt-5 max-w-2xl animate-rise-in text-base leading-7 text-stone-300 sm:mt-6 sm:text-lg sm:leading-8">
             A complete job portal for candidates, recruiters, and admins. Streamline your hiring process with modern tools, beautiful profiles, and seamless applications.
           </p>
+          <form onSubmit={searchJobs} className="mx-auto mt-8 grid max-w-3xl gap-2 rounded-2xl bg-white p-2 shadow-2xl shadow-teal-950/20 animate-rise-in sm:mt-10 sm:grid-cols-[1.5fr_1fr_auto]">
+            <label className="relative">
+              <span className="sr-only">Search jobs</span>
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-stone-400" />
+              <input className="h-12 w-full rounded-xl border-0 bg-stone-50 pl-10 text-sm text-stone-900 outline-none ring-0 placeholder:text-stone-400 focus:ring-2 focus:ring-teal-500" placeholder="Job title or skill" value={search} onChange={(e) => setSearch(e.target.value)} />
+            </label>
+            <label className="relative">
+              <span className="sr-only">Search location</span>
+              <MapPin className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-stone-400" />
+              <input className="h-12 w-full rounded-xl border-0 bg-stone-50 pl-10 text-sm text-stone-900 outline-none focus:ring-2 focus:ring-teal-500" placeholder="Location or remote" value={location} onChange={(e) => setLocation(e.target.value)} />
+            </label>
+            <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 text-sm font-bold text-white transition hover:bg-teal-500"><Search className="h-4 w-4" /> Search</button>
+          </form>
+          <div className="mt-4 flex flex-wrap justify-center gap-2 text-xs text-stone-400"><span>Popular:</span>{['React', 'Remote', 'Design', 'Marketing'].map((term) => <button type="button" key={term} onClick={() => { setSearch(term); navigate(`/jobs?search=${term}`); }} className="rounded-full border border-stone-700 px-3 py-1 transition hover:border-teal-400 hover:text-teal-300">{term}</button>)}</div>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
             <Link to="/jobs" className="group flex items-center justify-center rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 transition-all sm:px-8 sm:py-3.5 sm:text-base">
               Browse Jobs
@@ -126,7 +151,7 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {latestJobs.map((job) => (
                 <Link to={`/jobs/${job._id}`} key={job._id} className="group relative rounded-lg border border-stone-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-900/50 hover:border-teal-500/30 sm:p-6">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -147,6 +172,7 @@ export default function Home() {
                 </Link>
               ))}
             </div>
+            <Link to="/jobs" className="mt-8 flex items-center justify-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-500 sm:hidden">View all jobs <ArrowRight className="h-4 w-4" /></Link>
           </div>
         </section>
       )}

@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 export default function JobCard({ job, onSave }) {
   return (
-    <article className="panel flex flex-col gap-4">
+    <article className="panel group flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg dark:hover:border-teal-700">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <Link to={`/jobs/${job._id}`} className="break-words text-lg font-semibold text-ink hover:text-brand dark:text-white transition-colors duration-300">{job.title}</Link>
+            <Link to={`/jobs/${job._id}`} className="break-words text-lg font-semibold text-ink transition-colors duration-300 group-hover:text-brand dark:text-white">{job.title}</Link>
             <p className="text-sm text-stone-500 dark:text-stone-400">{job.company?.name || 'Company pending'}</p>
           </div>
           {onSave && (
