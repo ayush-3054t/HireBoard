@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, LogOut, Moon, Sun } from 'lucide-react';
+import { BriefcaseBusiness, LogOut, Menu, Moon, Sun, X } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -9,17 +9,19 @@ const dashboardPath = { user: '/user/dashboard', recruiter: '/recruiter/dashboar
 export default function Navbar() {
   const { token, role, logout } = useAuth();
   const { dark, toggleDark } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
   const linkClass = ({ isActive }) => `text-sm font-medium ${isActive ? 'text-brand' : 'text-stone-600 hover:text-ink dark:text-stone-300 dark:hover:text-white transition-colors duration-300'}`;
 
   return (
     <header className="sticky top-0 z-20 border-b border-stone-200 bg-white/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
-      <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <nav className="mx-auto max-w-7xl px-4 py-3" aria-label="Main navigation">
+        <div className="flex items-center justify-between gap-3">
         <Link to="/" className="flex shrink-0 items-center gap-2 font-bold text-ink dark:text-white">
           <BriefcaseBusiness className="h-6 w-6 text-brand" />
           HireBoard
         </Link>
-        <div className="flex flex-1 items-center justify-end gap-2 sm:flex-none sm:gap-4">
-          <NavLink to="/jobs" className={linkClass}>Jobs</NavLink>
+        <div className="hidden items-center gap-4 md:flex">
+          <NavLink to="/jobs" className={linkClass}>Find jobs</NavLink>
           {token && <NavLink to={dashboardPath[role]} className={linkClass}>Dashboard</NavLink>}
           <button
             onClick={toggleDark}
@@ -39,6 +41,20 @@ export default function Navbar() {
             <Link className="btn-primary" to="/login">Login</Link>
           )}
         </div>
+        <button type="button" onClick={() => setMenuOpen((open) => !open)} className="btn-secondary h-10 w-10 p-0 md:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>
+          {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+        </div>
+        {menuOpen && (
+          <div className="mt-3 grid gap-2 border-t border-stone-200 pt-3 dark:border-stone-800 md:hidden">
+            <NavLink to="/jobs" onClick={() => setMenuOpen(false)} className={`${linkClass({ isActive: false })} rounded-md px-3 py-2 hover:bg-stone-100 dark:hover:bg-stone-900`}>Find jobs</NavLink>
+            {token && <NavLink to={dashboardPath[role]} onClick={() => setMenuOpen(false)} className={`${linkClass({ isActive: false })} rounded-md px-3 py-2 hover:bg-stone-100 dark:hover:bg-stone-900`}>Dashboard</NavLink>}
+            <div className="flex items-center gap-2 px-1 pt-1">
+              <button onClick={toggleDark} className="btn-secondary flex-1">{dark ? 'Light mode' : 'Dark mode'}</button>
+              {token ? <button className="btn-primary flex-1" onClick={() => { logout(); setMenuOpen(false); }}>Logout</button> : <Link className="btn-primary flex-1" to="/login" onClick={() => setMenuOpen(false)}>Login</Link>}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

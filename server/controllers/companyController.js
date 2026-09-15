@@ -1,5 +1,6 @@
 const Company = require('../models/Company');
 const Recruiter = require('../models/Recruiter');
+const Job = require('../models/Job');
 
 const upsertCompany = async (req, res, next) => {
   try {
@@ -11,6 +12,10 @@ const upsertCompany = async (req, res, next) => {
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     await Recruiter.findByIdAndUpdate(req.account._id, { company: company._id });
+    await Job.updateMany(
+      { recruiter: req.account._id, company: null },
+      { company: company._id }
+    );
     res.json(company);
   } catch (error) {
     next(error);

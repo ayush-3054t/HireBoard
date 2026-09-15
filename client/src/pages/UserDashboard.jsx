@@ -1,109 +1,29 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api, { API_BASE_URL } from '../api/axios';
 import StatCard from '../components/StatCard';
+import StatusBadge from '../components/StatusBadge';
+import { EmptyState, LoadingState } from '../components/PageState';
 
 export default function UserDashboard() {
   const [data, setData] = useState(null);
   const [profile, setProfile] = useState({ skills: '', location: '', phone: '' });
   const [resume, setResume] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
-
-  const load = async () => {
-    const { data } = await api.get('/users/dashboard');
-    setData(data);
-    if (data.user) {
-      setProfile({
-        skills: data.user.skills?.join(', ') || '',
-        location: data.user.location || '',
-        phone: data.user.phone || ''
-      });
-    }
-  };
-
+  const [saving, setSaving] = useState(false);
+  const load = async () => { const { data: dashboard } = await api.get('/users/dashboard'); setData(dashboard); setProfile({ skills: dashboard.user.skills?.join(', ') || '', location: dashboard.user.location || '', phone: dashboard.user.phone || '' }); };
   useEffect(() => { load().catch(() => toast.error('Unable to load dashboard')); }, []);
-
-  const saveProfile = async (event) => {
-    event.preventDefault();
-    const form = new FormData();
-    Object.entries(profile).forEach(([key, value]) => form.append(key, value));
-    if (resume) form.append('resume', resume);
-    if (profilePhoto) form.append('profilePhoto', profilePhoto);
-    try {
-      await api.put('/users/profile', form);
-      toast.success('Profile updated');
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Profile update failed');
-    }
-  };
-
-  if (!data) return <main className="mx-auto max-w-7xl px-4 py-10">Loading...</main>;
-
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
-      <h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Job seeker dashboard</h1>
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
-        <StatCard label="Applications" value={data.totalApplications} />
-        <StatCard label="Reviewing" value={data.reviewing} />
-        <StatCard label="Accepted" value={data.accepted} />
-      </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-[360px_1fr]">
-        <form className="panel space-y-3" onSubmit={saveProfile}>
-          <h2 className="font-semibold dark:text-white">Profile</h2>
-          
-          <div className="flex flex-col gap-4 py-2 sm:flex-row sm:items-center">
-            <div className="h-16 w-16 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800 shrink-0">
-              {(profilePhoto || data.user?.profilePhoto) ? (
-                <img src={profilePhoto ? URL.createObjectURL(profilePhoto) : `${API_BASE_URL}/${data.user.profilePhoto.startsWith('/') ? data.user.profilePhoto.slice(1) : data.user.profilePhoto}`} alt="Profile" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full items-center justify-center text-sm text-stone-500">No Img</div>
-              )}
-            </div>
-            <div className="w-full min-w-0">
-              <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Profile Photo</label>
-              <input type="file" accept=".png, .jpg, .jpeg" className="mt-1 block w-full text-sm text-stone-500 file:mr-3 file:rounded-full file:border-0 file:bg-brand/10 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-brand hover:file:bg-brand/20 sm:file:px-4" onChange={(e) => setProfilePhoto(e.target.files[0])} />
-            </div>
-          </div>
-
-          <label className="block">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Phone</span>
-            <input className="input mt-1" placeholder="Phone" value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} />
-          </label>
-          <label className="block">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Location</span>
-            <input className="input mt-1" placeholder="Location" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
-          </label>
-          <label className="block">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Skills</span>
-            <input className="input mt-1" placeholder="Skills, comma separated" value={profile.skills} onChange={(e) => setProfile({ ...profile, skills: e.target.value })} />
-          </label>
-          
-          <div className="py-2">
-            <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Resume (PDF)</label>
-            <input type="file" accept=".pdf" className="mt-1 block w-full text-sm text-stone-500 file:mr-3 file:rounded file:border-0 file:bg-stone-100 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-stone-700 hover:file:bg-stone-200 dark:file:bg-stone-800 dark:file:text-stone-300 sm:file:px-4" onChange={(e) => setResume(e.target.files[0])} />
-            {data.user?.resume && !resume && (
-              <p className="mt-2 text-xs text-brand">Current: {data.user.resume.split('/').pop()}</p>
-            )}
-            {resume && (
-              <p className="mt-2 text-xs text-brand">New file: {resume.name}</p>
-            )}
-          </div>
-          
-          <button className="btn-primary w-full">Save profile</button>
-        </form>
-        <section className="panel">
-          <h2 className="font-semibold dark:text-white">Application tracking</h2>
-          <div className="mt-4 divide-y divide-stone-200 dark:divide-stone-800">
-            {data.applications.map((app) => (
-              <div className="py-3" key={app._id}>
-                <p className="break-words font-medium dark:text-white">{app.job?.title}</p>
-                <p className="text-sm text-stone-500">{app.job?.company?.name || 'Company'} · {app.status}</p>
-              </div>
-            ))}
-            {!data.applications.length && <p className="text-sm text-stone-500">No applications yet.</p>}
-          </div>
-        </section>
-      </div>
-    </main>
-  );
+  const saveProfile = async (event) => { event.preventDefault(); setSaving(true); const form = new FormData(); Object.entries(profile).forEach(([key, value]) => form.append(key, value)); if (resume) form.append('resume', resume); if (profilePhoto) form.append('profilePhoto', profilePhoto); try { await api.put('/users/profile', form); toast.success('Profile updated'); setResume(null); setProfilePhoto(null); await load(); } catch (error) { toast.error(error.response?.data?.message || 'Profile update failed'); } finally { setSaving(false); } };
+  if (!data) return <main className="mx-auto max-w-7xl px-4 py-10"><LoadingState label="Loading your dashboard…" /></main>;
+  const photoUrl = data.user?.profilePhoto ? `${API_BASE_URL}/${data.user.profilePhoto.replace(/^\//, '')}` : null;
+  return <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+    <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between"><div><h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Your career dashboard</h1><p className="mt-1 text-stone-500">Keep your profile current and stay on top of each application.</p></div><Link to="/jobs" className="btn-primary w-fit">Browse jobs</Link></div>
+    <div className="mt-6 grid gap-4 md:grid-cols-3"><StatCard label="Applications" value={data.totalApplications} /><StatCard label="Reviewing" value={data.reviewing} /><StatCard label="Accepted" value={data.accepted} /></div>
+    <div className="mt-6 grid gap-6 lg:grid-cols-[360px_1fr]">
+      <form className="panel space-y-4" onSubmit={saveProfile}><div><h2 className="font-semibold dark:text-white">Profile essentials</h2><p className="mt-1 text-sm text-stone-500">This information helps recruiters evaluate your application.</p></div><div className="flex items-center gap-4"><div className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800">{profilePhoto || photoUrl ? <img src={profilePhoto ? URL.createObjectURL(profilePhoto) : photoUrl} alt="Profile" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-xs text-stone-500">No photo</div>}</div><label className="min-w-0 flex-1 text-sm font-medium text-stone-700 dark:text-stone-300">Profile photo<input type="file" accept=".png,.jpg,.jpeg" className="mt-1 block w-full text-sm text-stone-500 file:mr-3 file:rounded-full file:border-0 file:bg-brand/10 file:px-3 file:py-2 file:font-semibold file:text-brand hover:file:bg-brand/20" onChange={(e) => setProfilePhoto(e.target.files[0] || null)} /></label></div><label className="block text-sm font-medium text-stone-700 dark:text-stone-300">Phone<input className="input mt-1" value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} /></label><label className="block text-sm font-medium text-stone-700 dark:text-stone-300">Location<input className="input mt-1" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} /></label><label className="block text-sm font-medium text-stone-700 dark:text-stone-300">Skills<input className="input mt-1" placeholder="React, communication, sales…" value={profile.skills} onChange={(e) => setProfile({ ...profile, skills: e.target.value })} /></label><label className="block text-sm font-medium text-stone-700 dark:text-stone-300">Resume (PDF)<input type="file" accept=".pdf" className="mt-1 block w-full text-sm text-stone-500 file:mr-3 file:rounded file:border-0 file:bg-stone-100 file:px-3 file:py-2 file:font-semibold file:text-stone-700 dark:file:bg-stone-800 dark:file:text-stone-300" onChange={(e) => setResume(e.target.files[0] || null)} />{resume ? <span className="mt-1 block text-xs text-brand">New file: {resume.name}</span> : data.user?.resume && <span className="mt-1 block text-xs text-brand">Resume on file: {data.user.resume.split('/').pop()}</span>}</label><button className="btn-primary w-full" disabled={saving}>{saving ? 'Saving…' : 'Save profile'}</button></form>
+      <section className="panel"><div className="flex items-center justify-between gap-3"><div><h2 className="font-semibold dark:text-white">Application tracking</h2><p className="mt-1 text-sm text-stone-500">Updates from recruiters appear here.</p></div><span className="text-sm text-stone-500">{data.totalApplications} total</span></div><div className="mt-4 divide-y divide-stone-200 dark:divide-stone-800">{data.applications.map((app) => <div className="flex items-center justify-between gap-3 py-3" key={app._id}><div className="min-w-0"><Link to={`/jobs/${app.job?._id}`} className="font-medium text-ink hover:text-brand dark:text-white">{app.job?.title || 'Unavailable job'}</Link><p className="text-sm text-stone-500">{app.job?.company?.name || 'Company'}</p></div><StatusBadge status={app.status} /></div>)}{!data.applications.length && <p className="py-8 text-sm text-stone-500">No applications yet. Explore open roles to get started.</p>}</div></section>
+    </div>
+    <section className="mt-8"><div className="mb-3 flex items-center justify-between gap-3"><div><h2 className="text-lg font-semibold dark:text-white">Saved jobs</h2><p className="text-sm text-stone-500">Quick access to roles you want to revisit.</p></div><Link className="text-sm font-semibold text-brand hover:underline" to="/jobs">Browse jobs</Link></div>{data.savedJobs.length ? <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{data.savedJobs.map((job) => <Link key={job._id} to={`/jobs/${job._id}`} className="panel block hover:border-brand/40 hover:shadow-md"><p className="font-semibold text-ink dark:text-white">{job.title}</p><p className="mt-1 text-sm text-stone-500">{job.location} · {job.jobType}</p></Link>)}</div> : <EmptyState title="No saved jobs yet" description="Save roles from the jobs page so you can compare them later." />}</section>
+  </main>;
 }

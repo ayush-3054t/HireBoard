@@ -2,8 +2,12 @@ import { Bookmark, MapPin, WalletCards } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function JobCard({ job, onSave }) {
+  const salary = job.salaryMin || job.salaryMax
+    ? `${job.salaryMin ? `$${Number(job.salaryMin).toLocaleString()}` : 'Up to'} – ${job.salaryMax ? `$${Number(job.salaryMax).toLocaleString()}` : 'Open'}`
+    : 'Salary not listed';
+
   return (
-    <article className="panel flex flex-col gap-4">
+    <article className="panel flex flex-col gap-4 transition-shadow hover:shadow-md">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -16,12 +20,12 @@ export default function JobCard({ job, onSave }) {
             </button>
           )}
         </div>
-        <p className="mt-3 line-clamp-3 text-sm text-stone-600 dark:text-stone-300">{job.description}</p>
+        <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600 dark:text-stone-300">{job.description}</p>
       </div>
       <div className="flex flex-wrap gap-2 text-xs text-stone-600 dark:text-stone-300">
         <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-stone-100 px-3 py-1 dark:bg-stone-800"><MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{job.location}</span></span>
         <span className="rounded-full bg-stone-100 px-3 py-1 dark:bg-stone-800">{job.jobType}</span>
-        <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1 dark:bg-stone-800"><WalletCards className="h-3 w-3" />{job.salaryMin || 0} - {job.salaryMax || 'Open'}</span>
+        <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1 dark:bg-stone-800"><WalletCards className="h-3 w-3" />{salary}</span>
       </div>
     </article>
   );

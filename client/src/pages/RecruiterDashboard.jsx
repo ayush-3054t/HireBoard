@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import api, { API_BASE_URL } from '../api/axios';
 import StatCard from '../components/StatCard';
+import StatusBadge from '../components/StatusBadge';
+import { EmptyState, LoadingState } from '../components/PageState';
 
 export default function RecruiterDashboard() {
   const [data, setData] = useState(null);
   const [job, setJob] = useState({ title: '', description: '', location: '', jobType: 'Full-time', salaryMin: '', salaryMax: '', skills: '' });
   const [company, setCompany] = useState({ name: '', location: '', industry: '', website: '', description: '' });
   const [applicants, setApplicants] = useState([]);
+  const [editingJobId, setEditingJobId] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const load = async () => {
     const [{ data: dash }, { data: comp }] = await Promise.all([api.get('/recruiters/dashboard'), api.get('/companies/me')]);
@@ -19,14 +23,40 @@ export default function RecruiterDashboard() {
 
   const postJob = async (event) => {
     event.preventDefault();
+    setSubmitting(true);
     try {
-      await api.post('/jobs', { ...job, skills: job.skills.split(',').map((s) => s.trim()).filter(Boolean) });
-      toast.success('Job submitted for admin approval');
+      const payload = { ...job, skills: job.skills.split(',').map((s) => s.trim()).filter(Boolean) };
+      if (editingJobId) {
+        await api.put(`/jobs/${editingJobId}`, payload);
+        toast.success('Job updated');
+      } else {
+        await api.post('/jobs', payload);
+        toast.success('Job submitted for admin approval');
+      }
       setJob({ title: '', description: '', location: '', jobType: 'Full-time', salaryMin: '', salaryMax: '', skills: '' });
+      setEditingJobId(null);
       load();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Job post failed');
+      toast.error(error.response?.data?.message || 'Unable to save job');
+    } finally {
+      setSubmitting(false);
     }
+  };
+
+  const editJob = (item) => {
+    setEditingJobId(item._id);
+    setJob({ title: item.title || '', description: item.description || '', location: item.location || '', jobType: item.jobType || 'Full-time', salaryMin: item.salaryMin || '', salaryMax: item.salaryMax || '', skills: item.skills?.join(', ') || '' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const deleteJob = async (id) => {
+    if (!window.confirm('Delete this job and all of its applications? This cannot be undone.')) return;
+    try {
+      await api.delete(`/jobs/${id}`);
+      toast.success('Job deleted');
+      if (editingJobId === id) { setEditingJobId(null); setJob({ title: '', description: '', location: '', jobType: 'Full-time', salaryMin: '', salaryMax: '', skills: '' }); }
+      load();
+    } catch (error) { toast.error(error.response?.data?.message || 'Unable to delete job'); }
   };
 
   const saveCompany = async (event) => {
@@ -47,7 +77,7 @@ export default function RecruiterDashboard() {
     setApplicants((items) => items.map((app) => app._id === id ? { ...app, status } : app));
   };
 
-  if (!data) return <main className="mx-auto max-w-7xl px-4 py-10">Loading...</main>;
+  if (!data) return <main className="mx-auto max-w-7xl px-4 py-10"><LoadingState label="Loading recruiter dashboard…" /></main>;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
@@ -66,11 +96,11 @@ export default function RecruiterDashboard() {
           <button className="btn-primary">Save company</button>
         </form>
         <form className="panel space-y-3" onSubmit={postJob}>
-          <h2 className="font-semibold dark:text-white">Post job</h2>
+          <div className="flex items-center justify-between gap-3"><h2 className="font-semibold dark:text-white">{editingJobId ? 'Edit job' : 'Post a job'}</h2>{editingJobId && <button type="button" className="text-sm font-semibold text-brand hover:underline" onClick={() => { setEditingJobId(null); setJob({ title: '', description: '', location: '', jobType: 'Full-time', salaryMin: '', salaryMax: '', skills: '' }); }}>Cancel</button>}</div>
           {['title', 'location', 'salaryMin', 'salaryMax', 'skills'].map((key) => <input key={key} className="input" placeholder={key} value={job[key]} onChange={(e) => setJob({ ...job, [key]: e.target.value })} />)}
           <select className="input" value={job.jobType} onChange={(e) => setJob({ ...job, jobType: e.target.value })}>{['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'].map((type) => <option key={type}>{type}</option>)}</select>
           <textarea className="input min-h-24" placeholder="description" value={job.description} onChange={(e) => setJob({ ...job, description: e.target.value })} />
-          <button className="btn-primary">Submit job</button>
+          <button className="btn-primary" disabled={submitting}>{submitting ? 'Saving…' : editingJobId ? 'Save changes' : 'Submit job'}</button>
         </form>
       </div>
       <section className="panel mt-6">
@@ -79,9 +109,10 @@ export default function RecruiterDashboard() {
           {data.jobs.map((item) => (
             <div className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between" key={item._id}>
               <div className="min-w-0"><p className="break-words font-medium dark:text-white">{item.title}</p><p className="text-sm text-stone-500">{item.status} · {item.location}</p></div>
-              <button className="btn-secondary w-full sm:w-auto" onClick={() => viewApplicants(item._id)}>Applicants</button>
+              <div className="grid gap-2 sm:flex sm:flex-wrap"><StatusBadge status={item.status} /><button className="btn-secondary" onClick={() => viewApplicants(item._id)}>Applicants</button><button className="btn-secondary" onClick={() => editJob(item)}>Edit</button><button className="btn-secondary text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/30" onClick={() => deleteJob(item._id)}>Delete</button></div>
             </div>
           ))}
+          {!data.jobs.length && <div className="py-4"><EmptyState title="No jobs posted yet" description="Complete your company profile, then publish your first role for approval." /></div>}
         </div>
       </section>
       {!!applicants.length && <section className="panel mt-6">

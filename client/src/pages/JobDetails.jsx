@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { ErrorState, LoadingState } from '../components/PageState';
 
 export default function JobDetails() {
   const { id } = useParams();
@@ -12,9 +13,16 @@ export default function JobDetails() {
   const [resume, setResume] = useState(null);
 
   const [hasApplied, setHasApplied] = useState(false);
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    api.get(`/jobs/${id}`).then(({ data }) => setJob(data)).catch(() => toast.error('Job not found'));
+    setError('');
+    api.get(`/jobs/${id}`).then(({ data }) => setJob(data)).catch((requestError) => {
+      const message = requestError.response?.data?.message || 'Job not found';
+      setError(message);
+      toast.error(message);
+    });
     if (role === 'user') {
       api.get('/applications/me').then(({ data }) => {
         const applied = data.some(app => app.job._id === id || app.job === id);
@@ -25,6 +33,7 @@ export default function JobDetails() {
 
   const apply = async (event) => {
     event.preventDefault();
+    setSubmitting(true);
     const data = new FormData();
     data.append('coverLetter', coverLetter);
     if (resume) data.append('resume', resume);
@@ -36,10 +45,13 @@ export default function JobDetails() {
       setResume(null);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Could not apply');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (!job) return <main className="mx-auto max-w-4xl px-4 py-10">Loading...</main>;
+  if (error) return <main className="mx-auto max-w-4xl px-4 py-10"><ErrorState message={error} /></main>;
+  if (!job) return <main className="mx-auto max-w-4xl px-4 py-10"><LoadingState label="Loading job details…" /></main>;
 
   return (
     <main className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -59,11 +71,11 @@ export default function JobDetails() {
           <form className="mt-4 space-y-3" onSubmit={apply}>
             <textarea className="input min-h-32" placeholder="Cover letter" value={coverLetter} onChange={(e) => setCoverLetter(e.target.value)} disabled={hasApplied} />
             <input className="input" type="file" onChange={(e) => setResume(e.target.files[0])} disabled={hasApplied} accept=".pdf" />
-            <button className="btn-primary w-full disabled:opacity-50" disabled={hasApplied}>
-              {hasApplied ? 'Already Applied' : 'Submit application'}
+            <button className="btn-primary w-full disabled:opacity-50" disabled={hasApplied || submitting}>
+              {hasApplied ? 'Already Applied' : submitting ? 'Submitting…' : 'Submit application'}
             </button>
           </form>
-        ) : <p className="mt-3 text-sm text-stone-500">Login as a job seeker to apply.</p>}
+        ) : <p className="mt-3 text-sm text-stone-500">Please <Link className="font-semibold text-brand hover:underline" to="/login">sign in</Link> as a job seeker to apply.</p>}
       </aside>
     </main>
   );

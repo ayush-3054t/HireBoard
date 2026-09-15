@@ -24,7 +24,12 @@ const listJobs = async (req, res, next) => {
 
 const getJob = async (req, res, next) => {
   try {
-    const job = await Job.findById(req.params.id).populate('company recruiter', 'name location industry website');
+    const filter = req.role === 'admin'
+      ? { _id: req.params.id }
+      : req.role === 'recruiter'
+        ? { _id: req.params.id, recruiter: req.account._id }
+        : { _id: req.params.id, status: 'approved' };
+    const job = await Job.findOne(filter).populate('company recruiter', 'name location industry website');
     if (!job) {
       res.status(404);
       throw new Error('Job not found');
@@ -37,7 +42,12 @@ const getJob = async (req, res, next) => {
 
 const createJob = async (req, res, next) => {
   try {
-    const job = await Job.create({ ...req.body, recruiter: req.account._id, company: req.account.company || req.body.company });
+    if (!req.account.company) {
+      res.status(422);
+      throw new Error('Create your company profile before posting a job');
+    }
+    const { company: _company, recruiter: _recruiter, status: _status, ...jobData } = req.body;
+    const job = await Job.create({ ...jobData, recruiter: req.account._id, company: req.account.company });
     res.status(201).json(job);
   } catch (error) {
     next(error);
@@ -46,11 +56,15 @@ const createJob = async (req, res, next) => {
 
 const updateJob = async (req, res, next) => {
   try {
-    const job = await Job.findOneAndUpdate({ _id: req.params.id, recruiter: req.account._id }, req.body, { new: true });
+    const { company: _company, recruiter: _recruiter, status: _status, ...updates } = req.body;
+    const job = await Job.findOne({ _id: req.params.id, recruiter: req.account._id });
     if (!job) {
       res.status(404);
       throw new Error('Job not found');
     }
+    Object.assign(job, updates);
+    if (job.status === 'approved') job.status = 'pending';
+    await job.save();
     res.json(job);
   } catch (error) {
     next(error);

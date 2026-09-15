@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import api from '../api/axios';
 import JobCard from '../components/JobCard';
 import { useAuth } from '../context/AuthContext';
+import { EmptyState, ErrorState, LoadingState } from '../components/PageState';
 
 export default function JobsPage() {
   const { role } = useAuth();
@@ -10,15 +11,19 @@ export default function JobsPage() {
   const [meta, setMeta] = useState({ page: 1, pages: 1 });
   const [filters, setFilters] = useState({ search: '', location: '', jobType: '', salaryMin: '' });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const loadJobs = async (page = 1) => {
     setLoading(true);
+    setError('');
     try {
       const { data } = await api.get('/jobs', { params: { ...filters, page } });
       setJobs(data.jobs);
       setMeta({ page: data.page, pages: data.pages });
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Unable to load jobs');
+      const message = error.response?.data?.message || 'Unable to load jobs';
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -41,25 +46,26 @@ export default function JobsPage() {
         <h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Job listings</h1>
         <p className="text-stone-500">Search approved jobs by role, location, type, and salary.</p>
       </div>
-      <form className="panel mb-6 grid gap-3 md:grid-cols-5" onSubmit={(e) => { e.preventDefault(); loadJobs(); }}>
+      <form className="panel mb-6 grid gap-3 md:grid-cols-6" onSubmit={(e) => { e.preventDefault(); loadJobs(); }}>
         <input className="input md:col-span-2" placeholder="Search title or skills" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
         <input className="input" placeholder="Location" value={filters.location} onChange={(e) => setFilters({ ...filters, location: e.target.value })} />
         <select className="input" value={filters.jobType} onChange={(e) => setFilters({ ...filters, jobType: e.target.value })}>
           <option value="">Any type</option>
           {['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'].map((type) => <option key={type}>{type}</option>)}
         </select>
+        <input className="input" type="number" min="0" placeholder="Minimum salary" value={filters.salaryMin} onChange={(e) => setFilters({ ...filters, salaryMin: e.target.value })} />
         <button className="btn-primary">Filter</button>
       </form>
-      {loading ? <p>Loading jobs...</p> : (
+      {loading ? <LoadingState label="Finding the latest opportunities…" /> : error ? <ErrorState message={error} onRetry={() => loadJobs(meta.page)} /> : (
         <div className="grid gap-4 md:grid-cols-2">
           {jobs.map((job) => <JobCard key={job._id} job={job} onSave={role === 'user' ? saveJob : null} />)}
         </div>
       )}
-      {!loading && !jobs.length && <p className="panel">No jobs found.</p>}
-      <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:justify-end">
+      {!loading && !error && !jobs.length && <EmptyState title="No jobs match those filters" description="Try broadening your search, changing the location, or clearing a filter." />}
+      {!loading && !error && !!jobs.length && <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:justify-end">
         <button className="btn-secondary" disabled={meta.page <= 1} onClick={() => loadJobs(meta.page - 1)}>Previous</button>
         <button className="btn-secondary" disabled={meta.page >= meta.pages} onClick={() => loadJobs(meta.page + 1)}>Next</button>
-      </div>
+      </div>}
     </main>
   );
 }
