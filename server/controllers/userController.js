@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const { uploadFile } = require('../config/cloudinary');
 
 const updateProfile = async (req, res, next) => {
   try {
@@ -9,10 +10,21 @@ const updateProfile = async (req, res, next) => {
     
     if (req.files) {
       if (req.files['resume'] && req.files['resume'][0]) {
-        updates.resume = `/uploads/resumes/${req.files['resume'][0].filename}`;
+        const uploadedResume = await uploadFile(req.files['resume'][0], {
+          folder: 'hireboard/resumes',
+          resource_type: 'raw',
+          use_filename: true,
+          unique_filename: true
+        });
+        updates.resume = uploadedResume.secure_url;
       }
       if (req.files['profilePhoto'] && req.files['profilePhoto'][0]) {
-        updates.profilePhoto = `/uploads/profile/${req.files['profilePhoto'][0].filename}`;
+        const uploadedPhoto = await uploadFile(req.files['profilePhoto'][0], {
+          folder: 'hireboard/profile-photos',
+          resource_type: 'image',
+          transformation: [{ width: 640, height: 640, crop: 'limit' }]
+        });
+        updates.profilePhoto = uploadedPhoto.secure_url;
       }
     }
     

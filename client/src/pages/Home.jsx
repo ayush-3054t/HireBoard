@@ -51,19 +51,19 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1.5 text-xs font-semibold text-teal-300 backdrop-blur-sm sm:px-4 sm:text-sm">
+          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-200 backdrop-blur-sm sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4" />
             The Next-Gen Hiring Platform
           </div>
           <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:mt-8 sm:text-6xl lg:text-7xl">
             Find Your Dream Job <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">or Hire Top Talent.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">or Hire Top Talent.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-stone-300 sm:mt-6 sm:text-lg sm:leading-8">
             A complete job portal for candidates, recruiters, and admins. Streamline your hiring process with modern tools, beautiful profiles, and seamless applications.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
-            <Link to="/jobs" className="group flex items-center justify-center rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 transition-all sm:px-8 sm:py-3.5 sm:text-base">
+            <Link to="/jobs" className="group flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 transition-all sm:px-8 sm:py-3.5 sm:text-base">
               Browse Jobs
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
@@ -101,7 +101,7 @@ export default function Home() {
           <div className="mt-10 grid gap-4 sm:mt-16 sm:gap-8 md:grid-cols-3">
             {roles.map(([Icon, title, text]) => (
               <div className="relative rounded-lg border border-stone-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-950/50 sm:p-8" key={title}>
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300">
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="mt-6 text-xl font-semibold text-stone-900 dark:text-white">{title}</h3>
@@ -121,22 +121,22 @@ export default function Home() {
                 <h2 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-white sm:text-4xl">Latest Opportunities</h2>
                 <p className="mt-3 text-base text-stone-600 dark:text-stone-300 sm:mt-4 sm:text-lg">Discover recently approved roles from top companies.</p>
               </div>
-              <Link to="/jobs" className="hidden sm:flex items-center gap-2 text-teal-600 font-semibold hover:text-teal-500">
+              <Link to="/jobs" className="hidden sm:flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-500">
                 View all jobs <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
             
             <div className="mt-12 grid gap-6 md:grid-cols-2">
               {latestJobs.map((job) => (
-                <Link to={`/jobs/${job._id}`} key={job._id} className="group relative rounded-lg border border-stone-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-900/50 hover:border-teal-500/30 sm:p-6">
+                <Link to={`/jobs/${job._id}`} key={job._id} className="group relative rounded-lg border border-stone-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-stone-800 dark:bg-stone-900/50 hover:border-blue-500/30 sm:p-6">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
-                      <h3 className="break-words text-lg font-semibold text-stone-900 dark:text-white group-hover:text-teal-500 transition-colors sm:text-xl">{job.title}</h3>
+                      <h3 className="break-words text-lg font-semibold text-stone-900 dark:text-white group-hover:text-blue-500 transition-colors sm:text-xl">{job.title}</h3>
                       <p className="mt-1 flex items-center gap-2 text-stone-500 dark:text-stone-400">
                         <Building2 className="h-4 w-4" /> {job.company?.name || 'Company'}
                       </p>
                     </div>
-                    <span className="inline-flex w-fit items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-500/10 dark:text-teal-400">
+                    <span className="inline-flex w-fit items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
                       {job.jobType}
                     </span>
                   </div>
@@ -174,7 +174,7 @@ export default function Home() {
               ].map(([Icon, description]) => (
                 <div key={description} className="relative pl-9">
                   <dt className="inline font-semibold text-stone-900 dark:text-white">
-                    <Icon className="absolute left-1 top-1 h-5 w-5 text-teal-500" />
+                    <Icon className="absolute left-1 top-1 h-5 w-5 text-blue-500" />
                   </dt>
                   <dd className="inline">{description}</dd>
                 </div>
@@ -187,7 +187,7 @@ export default function Home() {
             <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-2xl dark:border-stone-800 dark:bg-stone-950/50 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500"></div>
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500"></div>
                   <div>
                     <div className="h-4 w-24 rounded bg-stone-200 dark:bg-stone-700"></div>
                     <div className="h-3 w-16 rounded bg-stone-200 mt-2 dark:bg-stone-800"></div>
@@ -225,7 +225,7 @@ export default function Home() {
             Join thousands of professionals and top companies already building the future on HireBoard.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
-            <Link to="/register" className="w-full rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-teal-400 transition-all sm:w-auto sm:px-8 sm:py-3.5 sm:text-base">
+            <Link to="/register" className="w-full rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-all sm:w-auto sm:px-8 sm:py-3.5 sm:text-base">
               Get Started for Free
             </Link>
           </div>

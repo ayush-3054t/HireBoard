@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import api, { API_BASE_URL } from '../api/axios';
+import api from '../api/axios';
+import { assetUrl } from '../utils/assetUrl';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import { EmptyState, LoadingState } from '../components/PageState';
@@ -122,7 +123,7 @@ export default function RecruiterDashboard() {
             <div className="flex min-w-0 items-center gap-3">
               <div className="h-10 w-10 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800 shrink-0">
                 {app.user?.profilePhoto ? (
-                  <img src={`${API_BASE_URL}/${app.user.profilePhoto.startsWith('/') ? app.user.profilePhoto.slice(1) : app.user.profilePhoto}`} alt="Profile" className="h-full w-full object-cover" />
+                  <img src={assetUrl(app.user.profilePhoto)} alt="Profile" className="h-full w-full object-cover" />
                 ) : (
                   <div className="flex h-full items-center justify-center text-xs text-stone-500">No Img</div>
                 )}
@@ -134,7 +135,7 @@ export default function RecruiterDashboard() {
             </div>
             <div className="grid gap-2 sm:flex sm:flex-wrap">
               {app.resume && (
-                <a href={`${API_BASE_URL}/${app.resume.startsWith('/') ? app.resume.slice(1) : app.resume}`} target="_blank" rel="noopener noreferrer" className="btn-secondary whitespace-nowrap text-brand">View Resume</a>
+                <a href={assetUrl(app.resume)} target="_blank" rel="noopener noreferrer" className="btn-secondary whitespace-nowrap text-brand">View Resume</a>
               )}
               <button className="btn-secondary" onClick={() => setStatus(app._id, 'accepted')}>Accept</button>
               <button className="btn-secondary" onClick={() => setStatus(app._id, 'rejected')}>Reject</button>

@@ -1,5 +1,6 @@
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const { uploadFile } = require('../config/cloudinary');
 
 const applyToJob = async (req, res, next) => {
   try {
@@ -8,12 +9,18 @@ const applyToJob = async (req, res, next) => {
       res.status(404);
       throw new Error('Approved job not found');
     }
+    const uploadedResume = req.file ? await uploadFile(req.file, {
+      folder: 'hireboard/application-resumes',
+      resource_type: 'raw',
+      use_filename: true,
+      unique_filename: true
+    }) : null;
     const application = await Application.create({
       job: job._id,
       user: req.account._id,
       recruiter: job.recruiter,
       coverLetter: req.body.coverLetter,
-      resume: req.file ? `/uploads/resumes/${req.file.filename}` : req.account.resume
+      resume: uploadedResume?.secure_url || req.account.resume
     });
     res.status(201).json(application);
   } catch (error) {

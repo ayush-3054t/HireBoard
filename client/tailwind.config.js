@@ -5,8 +5,8 @@ export default {
     extend: {
       colors: {
         ink: '#111827',
-        brand: '#0f766e',
-        accent: '#c2410c'
+        brand: '#2563eb',
+        accent: '#dc2626'
       }
     }
   },

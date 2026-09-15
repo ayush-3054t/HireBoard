@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api, { API_BASE_URL } from '../api/axios';
+import api from '../api/axios';
+import { assetUrl } from '../utils/assetUrl';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import { EmptyState, LoadingState } from '../components/PageState';
@@ -16,7 +17,7 @@ export default function UserDashboard() {
   useEffect(() => { load().catch(() => toast.error('Unable to load dashboard')); }, []);
   const saveProfile = async (event) => { event.preventDefault(); setSaving(true); const form = new FormData(); Object.entries(profile).forEach(([key, value]) => form.append(key, value)); if (resume) form.append('resume', resume); if (profilePhoto) form.append('profilePhoto', profilePhoto); try { await api.put('/users/profile', form); toast.success('Profile updated'); setResume(null); setProfilePhoto(null); await load(); } catch (error) { toast.error(error.response?.data?.message || 'Profile update failed'); } finally { setSaving(false); } };
   if (!data) return <main className="mx-auto max-w-7xl px-4 py-10"><LoadingState label="Loading your dashboard…" /></main>;
-  const photoUrl = data.user?.profilePhoto ? `${API_BASE_URL}/${data.user.profilePhoto.replace(/^\//, '')}` : null;
+  const photoUrl = assetUrl(data.user?.profilePhoto);
   return <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
     <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between"><div><h1 className="text-2xl font-bold dark:text-white sm:text-3xl">Your career dashboard</h1><p className="mt-1 text-stone-500">Keep your profile current and stay on top of each application.</p></div><Link to="/jobs" className="btn-primary w-fit">Browse jobs</Link></div>
     <div className="mt-6 grid gap-4 md:grid-cols-3"><StatCard label="Applications" value={data.totalApplications} /><StatCard label="Reviewing" value={data.reviewing} /><StatCard label="Accepted" value={data.accepted} /></div>

@@ -1,11 +1,19 @@
 const Company = require('../models/Company');
 const Recruiter = require('../models/Recruiter');
 const Job = require('../models/Job');
+const { uploadFile } = require('../config/cloudinary');
 
 const upsertCompany = async (req, res, next) => {
   try {
     const data = { ...req.body, recruiter: req.account._id };
-    if (req.file) data.logo = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      const uploadedLogo = await uploadFile(req.file, {
+        folder: 'hireboard/company-logos',
+        resource_type: 'image',
+        transformation: [{ width: 640, height: 640, crop: 'limit' }]
+      });
+      data.logo = uploadedLogo.secure_url;
+    }
     const company = await Company.findOneAndUpdate(
       { recruiter: req.account._id },
       data,
