@@ -1,12 +1,12 @@
 import axios from "axios";
 
 export const API_BASE_URL =
-  "https://hireboard-o33f.onrender.com";
+  "https://hireboard-api-ruddy.vercel.app";
 
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
-    "https://hireboard-o33f.onrender.com/api",
+    "https://hireboard-api-ruddy.vercel.app/api",
 
   withCredentials: true,
 });

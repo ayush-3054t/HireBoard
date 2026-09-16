@@ -6,3 +6,6 @@ server/uploads/*
 !server/uploads/.gitkeep
 client/.env
 server/.env
+
+.vercel
+.env*
