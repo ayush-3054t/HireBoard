@@ -1,11 +1,30 @@
 node_modules/
 dist/
+
+# Environment variables
 .env
-*.log
-server/uploads/*
-!server/uploads/.gitkeep
+.env*
 client/.env
 server/.env
 
+# Vercel
 .vercel
-.env*
+
+# Server uploads (keep the placeholder)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Logs
+*.log
+*.err.log
+*.out.log
+
+# Scratch / temp files
+server/scratch/
+client/scratch/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
